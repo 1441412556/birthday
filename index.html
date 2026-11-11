@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>✨ 宝贝女儿，生日快乐 ✨</title>
+    <style>
+        /* 基础设置 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Microsoft YaHei', 'PingFang SC', sans-serif;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-color: #fffcf9;
+        }
+
+        /* 1. 全屏照片背景 */
+        .fullscreen-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            background-image: url('daughter.jpg'); /* 确保同目录下有这张图 */
+            background-size: cover;
+            background-position: center 20%;
+            background-repeat: no-repeat;
+        }
+
+        /* 2. 柔光渐变遮罩 */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            background-image:
+                linear-gradient(90deg, rgba(255, 182, 193, 0.5) 0%, rgba(255, 255, 255, 0.2) 40%, rgba(255, 255, 255, 0.85) 100%),
+                linear-gradient(to top, rgba(255,255,255,0.6) 0%, transparent 30%);
+        }
+
+        /* 3. 飘落的蛋糕和音符特效 */
+        .falling-items {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 3;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .item {
+            position: absolute;
+            top: -50px;
+            font-size: 2.5vw;
+            animation: fall linear infinite;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+        }
+        /* 给不同元素设置不同的下落速度和位置 */
+        .item:nth-child(1) { left: 10%; animation-duration: 6s; animation-delay: 0s; }
+        .item:nth-child(2) { left: 25%; animation-duration: 8s; animation-delay: 2s; font-size: 3.5vw; }
+        .item:nth-child(3) { left: 40%; animation-duration: 7s; animation-delay: 4s; }
+        .item:nth-child(4) { left: 55%; animation-duration: 9s; animation-delay: 1s; font-size: 3vw; }
+        .item:nth-child(5) { left: 70%; animation-duration: 5s; animation-delay: 3s; }
+        .item:nth-child(6) { left: 85%; animation-duration: 8s; animation-delay: 5s; font-size: 4vw; }
+        .item:nth-child(7) { left: 95%; animation-duration: 7s; animation-delay: 2.5s; }
+
+        /* 4. 悬浮文字容器 */
+        .content-container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 1500px;
+            height: 100%;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding-right: 5vw;
+            pointer-events: none;
+        }
+
+        .text-box {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-end;
+            text-align: right;
+            animation: floatText 6s ease-in-out infinite;
+        }
+
+        .title-sub {
+            font-size: 1.6vw;
+            letter-spacing: 10px;
+            color: #d4af37;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            font-weight: 900;
+            text-shadow: 0 0 20px rgba(255,255,255,0.8), 0 0 10px rgba(212, 175, 55, 0.5);
+        }
+
+        .title-main {
+            font-size: 5vw;
+            font-weight: 900;
+            line-height: 1.2;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #d67e87, #ff8c00, #d67e87);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-size: 200% auto;
+            animation: shine 4s linear infinite;
+            filter: drop-shadow(0 5px 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 20px rgba(214, 126, 135, 0.4));
+        }
+
+        .divider {
+            width: 80%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255, 182, 193, 1), transparent);
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(255, 182, 193, 0.8);
+        }
+
+        .message {
+            font-size: 1.8vw;
+            line-height: 2.2;
+            color: #4a3b3b;
+            letter-spacing: 3px;
+            font-weight: bold;
+            text-shadow: 0 2px 10px rgba(255, 255, 255, 1), 0 0 20px rgba(255, 255, 255, 0.8);
+        }
+
+        .message .highlight {
+            color: #d67e87;
+            font-size: 2vw;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 15px rgba(214, 126, 135, 0.6);
+        }
+
+        .icons {
+            margin-top: 40px;
+            font-size: 2.5vw;
+            display: flex;
+            gap: 25px;
+        }
+        .icons span {
+            animation: bounce 2s infinite ease-in-out;
+            filter: drop-shadow(0 5px 15px rgba(255, 255, 255, 0.8)) drop-shadow(0 5px 10px rgba(255, 182, 193, 0.5));
+        }
+        .icons span:nth-child(2) { animation-delay: 0.3s; }
+        .icons span:nth-child(3) { animation-delay: 0.6s; }
+
+        /* 5. 自动播放音乐提示层（点击后消失） */
+        .play-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            z-index: 999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: opacity 0.5s ease;
+        }
+        .play-btn {
+            background: linear-gradient(135deg, #ff6ec4, #7873f5);
+            color: white;
+            padding: 20px 50px;
+            border-radius: 50px;
+            font-size: 2.5vw;
+            font-weight: bold;
+            box-shadow: 0 15px 30px rgba(255, 110, 196, 0.5);
+            animation: pulseBtn 2s infinite;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* ====== 动画关键帧 ====== */
+
+        @keyframes floatText {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(110vh) rotate(360deg); opacity: 0; }
+        }
+
+        @keyframes shine {
+            to { background-position: 200% center; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        @keyframes pulseBtn {
+            0% { transform: scale(1); box-shadow: 0 15px 30px rgba(255, 110, 196, 0.5); }
+            50% { transform: scale(1.05); box-shadow: 0 20px 40px rgba(255, 110, 196, 0.8); }
+            100% { transform: scale(1); box-shadow: 0 15px 30px rgba(255, 110, 196, 0.5); }
+        }
+
+        /* 竖屏或小屏适配 */
+        @media (max-aspect-ratio: 1/1) {
+            .overlay {
+                background: linear-gradient(to bottom, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.9) 60%, rgba(255,255,255,1) 100%);
+            }
+            .content-container {
+                justify-content: center;
+                align-items: flex-end;
+                padding-bottom: 10vh;
+                padding-right: 0;
+            }
+            .text-box {
+                align-items: center;
+                text-align: center;
+            }
+            .title-sub { font-size: 3vw; }
+            .title-main { font-size: 8vw; }
+            .message { font-size: 4vw; }
+            .message .highlight { font-size: 4.5vw; }
+            .icons { font-size: 6vw; justify-content: center;}
+            .play-btn { font-size: 5vw; padding: 15px 30px; }
+            .item { font-size: 6vw; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 音乐播放提示层 -->
+    <div class="play-overlay" id="playOverlay">
+        <div class="play-btn">
+            🎵 点击开启生日惊喜
+        </div>
+    </div>
+
+    <!-- 自动播放的音频 (请在相同文件夹放一首 birthday.mp3) -->
+    <audio id="bgMusic" loop>
+        <source src="birthday.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <!-- 1. 铺满全屏的照片 -->
+    <div class="fullscreen-bg"></div>
+
+    <!-- 2. 渐变遮罩层 -->
+    <div class="overlay"></div>
+
+    <!-- 3. 飘落的蛋糕和音符 -->
+    <div class="falling-items">
+        <div class="item">🎂</div>
+        <div class="item">🎵</div>
+        <div class="item">🎈</div>
+        <div class="item">🎵</div>
+        <div class="item">🎁</div>
+        <div class="item">🎵</div>
+        <div class="item">🎂</div>
+    </div>
+
+    <!-- 4. 悬浮在照片上的文字 -->
+    <div class="content-container">
+        <div class="text-box">
+            <div class="title-sub">HAPPY BIRTHDAY</div>
+            <h1 class="title-main">宝贝，生日快乐！</h1>
+            <div class="divider"></div>
+            <div class="message">
+                愿你像小格格一样，<br>
+                在璀璨星光中无忧无虑地长大。<br>
+                <span class="highlight">眼里有星河，心中有暖阳。</span><br>
+                所有的美好都如期而至。
+            </div>
+            <div class="icons">
+                <span>🎂</span>
+                <span>👑</span>
+                <span>🎁</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 交互脚本 -->
+    <script>
+        const overlay = document.getElementById('playOverlay');
+        const music = document.getElementById('bgMusic');
+
+        // 点击屏幕或按遥控器确定键触发
+        overlay.addEventListener('click', function() {
+            // 播放音乐
+            music.play().catch(error => {
+                console.log("播放失败，可能是浏览器限制或没有找到音乐文件");
+            });
+
+            // 隐藏提示层
+            overlay.style.opacity = '0';
+            setTimeout(() => {
+                overlay.style.display = 'none';
+            }, 500);
+        });
+    </script>
+</body>
+</html>
